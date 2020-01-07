@@ -24,9 +24,14 @@ class Router {
                     return acc
                 }, html)
 
-                res.json({
-                    message: newHtml
-                })
+                if (keys === undefined){
+                    res.status(400)
+                    .json({ "error": "No keys parameter in request body" })
+                } else {
+                    res.json({
+                        message: newHtml
+                    })
+                }
             } catch (e) {
                 res.status(400).send(JSON.stringify({ "error": "problem with posted data" }));
             }
