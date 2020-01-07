@@ -1,6 +1,7 @@
 import * as express from 'express'
 import cors from 'cors'
-
+import _ from 'lodash'
+import KeyType from './types/types'
 class Router {
 
     constructor(server: express.Express) {
@@ -16,14 +17,16 @@ class Router {
         //create new cat
         router.post('/parse', cors(), (req: express.Request, res: express.Response) => {
             try {
-                console.log(req.body)
-                // let cat: Cat = {} as Cat;
-                // Object.assign(cat, req.body)
-                // const newUUID = uuid();
-                // cats[newUUID] = cat;
-                // res.json({
-                //     uuid: newUUID
-                // })
+                let {html, keys} = req.body
+
+                let newHtml = _.reduce(keys, (acc: string, el: KeyType) => {
+                    acc = acc.replace(el.key,  `<a href=\"${el.url}\">${el.key}</a>`)
+                    return acc
+                }, html)
+
+                res.json({
+                    message: newHtml
+                })
             } catch (e) {
                 res.status(400).send(JSON.stringify({ "error": "problem with posted data" }));
             }

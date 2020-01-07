@@ -2,8 +2,8 @@
     "openapi": "3.0.0",
     "info": {
         "version": "1.0.0",
-        "title": "Seans-TypeScript-NodeJS-CRUD-REST-API-Boilerplate",
-        "description": "A minimal and easy to follow example of what you need to create a CRUD style API in NodeJs using TypeScript",
+        "title": "link-searcher",
+        "description": "",
         "license": {
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT"
@@ -12,17 +12,13 @@
     "servers": [
         {
             "url": "/",
-            "description": "Local Dev, or from Heroku"
-        },
-        {
-            "url": "/api/",
-            "description": "With docker-compose and nginx proxy"
+            "description": "Local Dev"
         }
     ],
     "tags": [
         {
-            "name": "Cats",
-            "description": "API for cats in the system"
+            "name": "Link search and parse",
+            "description": "API for replace keys by links"
         }
     ],
     "consumes": [
@@ -32,33 +28,19 @@
         "application/json"
     ],
     "paths": {
-        "/cats": {
-            "get": {
-                "tags": [
-                    "Cats"
-                ],
-                "summary": "Get all cats in system",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/Cats"
-                        }
-                    }
-                }
-            },
+        "/parse": {
             "post": {
                 "tags": [
-                    "Cats"
+                    "Main"
                 ],
-                "summary": "Create a new cat in system",
+                "summary": "Replace keys by links if key was found",
                 "requestBody": {
-                    "description": "Cat Object",
+                    "description": "Parse Input Data",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/Cat"
+                                "$ref": "#/definitions/ParseInput"
                             }
                         }
                     }
@@ -70,7 +52,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/id"
+                            "$ref": "#/definitions/ResponseAfterReplece"
                         }
                     },
                     "400": {
@@ -78,150 +60,40 @@
                     }
                 }
             }
-        },
-        "/cats/{id}": {
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "required": true,
-                    "description": "ID of the cat that we want to match",
-                    "type": "string"
-                }
-            ],
-            "get": {
-                "tags": [
-                    "Cats"
-                ],
-                "summary": "Get cat with given ID",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "description": "Cat with id",
-                        "schema": {
-                            "$ref": "#/definitions/id"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/Cat"
-                        }
-                    },
-                    "404": {
-                        "description": "Failed. Cat not found."
-                    }
-                }
-            },
-            "put": {
-                "summary": "Update cat with given ID",
-                "tags": [
-                    "Cats"
-                ],
-                "requestBody": {
-                    "description": "Cat Object",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/definitions/Cat"
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "description": "Cat with new values of properties",
-                        "schema": {
-                            "$ref": "#/definitions/id"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/Cat"
-                        }
-                    },
-                    "400": {
-                        "description": "Failed. Bad post data."
-                    },
-                    "404": {
-                        "description": "Failed. Cat not found."
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete cat with given ID",
-                "tags": [
-                    "Cats"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "description": "Delete Cat with id",
-                        "schema": {
-                            "$ref": "#/definitions/id"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/id"
-                        }
-                    },
-                    "404": {
-                        "description": "Failed. Cat not found."
-                    }
-                }
-            }
+           
         }
     },
     "definitions": {
-        "id": {
-            "properties": {
-                "uuid": {
-                    "type": "string"
-                }
-            }
-        },
-        "Cat": {
+        "ParseInput": {
             "type": "object",
             "properties": {
-                "genus": {
+                "html": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string"
-                },
-                "isHungry": {
-                    "type": "boolean"
-                },
-                "lastFedDate": {
-                    "type": "string"
-                }
-            }
-        },
-        "Cats": {
-            "type": "object",
-            "properties": {
-                "cats": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/Cat"
+                "keys": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/KeysItem"
                     }
+                }
+            }
+        },
+        "KeysItem": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseAfterReplece": {
+            "type": "object",
+            "properties": {
+                "html": {
+                    "type": "string"
                 }
             }
         }
